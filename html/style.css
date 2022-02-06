@@ -1,0 +1,80 @@
+#map {
+    position:absolute;
+    left: -0.58%;
+    top:72%;
+    margin: 1.12%;
+    margin-left: 2%;
+    width: 13.8%;
+    height: 22.8%;
+    padding:0px;
+    text-align: center;
+    border-style: solid;
+    border-width: 0.3%;
+    border-color: black;
+}
+#heal {
+    position:absolute;
+    left: -0.58%;
+    top:94.7%;
+    margin: 1.12%;
+    margin-left: 2%;
+    width: 13.8%;
+    height: 1%;
+    padding:0px;
+    text-align: center;
+    border-style: solid;
+    border-width: 0.3%;
+    border-color: black;
+    float:left;
+    background-color:#696969;
+}
+#armor {
+    position:absolute;
+    left: -0.58%;
+    top:96%;
+    margin: 1.12%;
+    margin-left: 2%;
+    width: 13.8%;
+    height: 1%;
+    padding:0px;
+    text-align: center;
+    border-style: solid;
+    border-width: 0.3%;
+    border-color: black;
+    background-color:#696969;
+}
+#box, #boxArmor {
+    background: #12a402;
+    width: 100%;
+    height: 100%;
+}
+
+#boxArmor {
+    background: #0076ec;
+}
+
+p {
+    position:absolute;
+    right: 2%;
+    text-align: right;
+}
+
+#compass {
+    top:71%;
+    font-size:50px;
+    color:white;
+    font-weight: bold;
+}
+
+
+#street {
+    top: 82%;
+    font-size:40px;
+    color:#f7df58;
+}
+
+body {
+    overflow:hidden;
+    font-family: raleway;
+    text-shadow: 2px 2px 0px #000000;
+}
