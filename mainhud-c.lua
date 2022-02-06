@@ -3,21 +3,28 @@
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-        if (IsPedInAnyVehicle(GetPlayerPed(-1),true)) then 
-            DisplayRadar(true)
-            TriggerEvent("enteredCar", true)
-        else
-            DisplayRadar(false)
-            TriggerEvent("exitCar", true)
-        end
 
         local ped = GetPlayerPed(-1)
         local health = GetEntityHealth(ped)
         local armor = GetPedArmour(ped)
-        SendNUIMessage({
-            heal = health,
-            armor = armor
-        });
+
+        if (IsPedInAnyVehicle(GetPlayerPed(-1),true)) then 
+            DisplayRadar(true)
+            TriggerEvent("enteredCar", true)
+            local fuelLevel = exports["hop_fuel"]:GetFuel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
+            SendNUIMessage({
+                heal = health,
+                armor = armor,
+                fuel = fuelLevel
+            });
+        else
+            DisplayRadar(false)
+            TriggerEvent("exitCar", true)
+            SendNUIMessage({
+                heal = health,
+                armor = armor
+            });
+        end
     end
 end)
 
