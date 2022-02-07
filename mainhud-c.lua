@@ -15,14 +15,15 @@ Citizen.CreateThread(function()
             DisplayRadar(true)
             TriggerEvent("enteredCar", true)
             local fuelLevel = exports["hop_fuel"]:GetFuel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
-            local nosLevel = exports["sw-nitro"]:GetNitroFuelLevel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
+            local nosLevel = exports["hop_nitro"]:GetNitroFuelLevel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
 
             SendNUIMessage({
                 heal = health,
                 water = waterLevel,
                 food = foodLevel,
                 fuel = fuelLevel,
-                nos = nosLevel
+                nos = nosLevel,
+                show = IsPauseMenuActive()
             });
         else
             DisplayRadar(false)
@@ -30,7 +31,8 @@ Citizen.CreateThread(function()
             SendNUIMessage({
                 heal = health,
                 water = waterLevel,
-                food = foodLevel
+                food = foodLevel,
+                show = IsPauseMenuActive()
             });
         end
     end
