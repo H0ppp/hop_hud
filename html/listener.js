@@ -2,8 +2,10 @@ $(function() {
     var $debug = $("#debug");
 	var $heal = $("#heal");
 	var $box = $("#box");
-	var $boxArmor = $("#boxArmor");
+	var $boxFood = $("#boxFood");
+	var $boxWater = $("#boxWater");
 	var $boxFuel = $("#boxFuel");
+	var $boxNos = $("#boxNos");
 	$("#map").hide();
     $("#hud").hide();
 	$("#vehicle").hide();
@@ -12,8 +14,10 @@ $(function() {
 		var item = event.data;
 
 		$box.css("width", (event.data.heal-100)+"%");
-		$boxArmor.css("width", (event.data.armor)+"%");
+		$boxFood.css("width", (event.data.food)+"%");
+		$boxWater.css("width", (event.data.water)+"%");
 		$boxFuel.css("width", (event.data.fuel)+"%");
+		$boxNos.css("width", (event.data.nos/20)+"%");
 		if (item.type === "ui") {
 			if (item.display === true) {
             	$("#map").show();

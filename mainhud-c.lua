@@ -1,3 +1,6 @@
+local waterLevel = 0
+local foodLevel = 0
+
 
 -- Hide minimap when out of car, and replace health/armor bars
 Citizen.CreateThread(function()
@@ -6,23 +9,28 @@ Citizen.CreateThread(function()
 
         local ped = GetPlayerPed(-1)
         local health = GetEntityHealth(ped)
-        local armor = GetPedArmour(ped)
+
 
         if (IsPedInAnyVehicle(GetPlayerPed(-1),true)) then 
             DisplayRadar(true)
             TriggerEvent("enteredCar", true)
             local fuelLevel = exports["hop_fuel"]:GetFuel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
+            local nosLevel = exports["sw-nitro"]:GetNitroFuelLevel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
+
             SendNUIMessage({
                 heal = health,
-                armor = armor,
-                fuel = fuelLevel
+                water = waterLevel,
+                food = foodLevel,
+                fuel = fuelLevel,
+                nos = nosLevel
             });
         else
             DisplayRadar(false)
             TriggerEvent("exitCar", true)
             SendNUIMessage({
                 heal = health,
-                armor = armor
+                water = waterLevel,
+                food = foodLevel
             });
         end
     end
@@ -77,4 +85,9 @@ AddEventHandler('exitCar', function()
     type = "ui",
     display = false
   })
+end)
+
+
+AddEventHandler("hop_hud:updateBasics", function(basics)
+    waterLevel, foodLevel = basics[1].percent, basics[2].percent
 end)
