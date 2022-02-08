@@ -17,15 +17,17 @@ $(function() {
 		$boxWater.css("width", (item.water)+"%");
 		$boxFuel.css("width", (item.fuel)+"%");
 		$boxNos.css("width", (item.nos/20)+"%");
+		$('#bank').text(event.data.bank);
+		$('#cash').text(event.data.cash);
 		if (item.type === "ui") {
 			if (item.display === true) {
-            	$("#map").show();
-                $("#hud").show();
-				$("#vehicle").show();
+            	$("#map").fadeIn(500);
+                $("#hud").fadeIn(500);
+				$("#vehicle").fadeIn(500);
 			} else{
-              	$("#map").hide();
-                $("#hud").hide();
-				$("#vehicle").hide();
+              	$("#map").fadeOut(500);
+                $("#hud").fadeOut(500);
+				$("#vehicle").fadeOut(500);
             }
 	    } else if (item.type === "vehui"){
             $('#street').text(event.data.location);

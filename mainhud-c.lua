@@ -1,15 +1,33 @@
 local waterLevel = 0
 local foodLevel = 0
+local cashValue = 0
+local bankValue = 0
+ESX = nil
+playerData = nil
 
+Citizen.CreateThread(function()
+	while ESX == nil do
+		TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+		Citizen.Wait(0)
+	end
+	playerData = ESX.GetPlayerData()
+end)
 
--- Hide minimap when out of car, and replace health/armor bars
 Citizen.CreateThread(function()
     while true do
         Citizen.Wait(0)
-
+	    playerData = ESX.GetPlayerData()
         local ped = GetPlayerPed(-1)
         local health = GetEntityHealth(ped)
 
+        for k,v in ipairs(playerData.accounts) do
+            if v.name == 'money' then
+                cashValue = "$" .. ESX.Math.GroupDigits(v.money)
+            end
+            if v.name == 'bank' then
+                bankValue = "$" .. ESX.Math.GroupDigits(v.money)
+            end
+        end
 
         if (IsPedInAnyVehicle(GetPlayerPed(-1),true)) then 
             DisplayRadar(true)
@@ -23,7 +41,8 @@ Citizen.CreateThread(function()
                 food = foodLevel,
                 fuel = fuelLevel,
                 nos = nosLevel,
-                show = IsPauseMenuActive()
+                bank = bankValue,
+                cash = cashValue
             });
         else
             DisplayRadar(false)
@@ -32,9 +51,11 @@ Citizen.CreateThread(function()
                 heal = health,
                 water = waterLevel,
                 food = foodLevel,
-                show = IsPauseMenuActive()
+                bank = bankValue,
+                cash = cashValue
             });
         end
+
     end
 end)
 

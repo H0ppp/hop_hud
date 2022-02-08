@@ -116,7 +116,7 @@
     background: #ffae00;
 }
 
-p {
+span, p {
     position:absolute;
     right: 2%;
     text-align: right;
@@ -127,6 +127,31 @@ p {
     font-size:50px;
     color:white;
     font-weight: bold;
+}
+
+#bank {
+    top:10%;
+    font-size:30px;
+    color:white;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('img/accounts/bank.png');
+    background-repeat: no-repeat;
+    padding-left: 35px;  /* width of the image plus a little extra padding */
+    background-position: 0% 55%; 
+
+}
+
+#cash {
+    top:15%;
+    font-size:30px;
+    color:white;
+    font-weight: bold;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-image: url('img/accounts/money.png');
+    background-repeat: no-repeat;
+    padding-left: 20px;  /* width of the image plus a little extra padding */
+    background-position: 0% 55%; 
 }
 
 
