@@ -32,6 +32,18 @@ $(function() {
 	    } else if (item.type === "vehui"){
             $('#street').text(event.data.location);
             $('#compass').text(event.data.dir);
-        }
+        } else if (item.type === "cashui"){
+			if (item.showCash === true) {
+            	$("#money").fadeIn(500);
+			} else{
+              	$("#money").fadeOut(500);
+            }
+        } else if (item.type === "pause"){
+			if (item.showHUD === true) {
+            	$container.hide();
+			} else{
+				$container.show();
+            }
+		}
     }); 
 });
