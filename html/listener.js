@@ -5,9 +5,10 @@ $(function() {
 	var $boxWater = $("#boxWater");
 	var $boxFuel = $("#boxFuel");
 	var $boxNos = $("#boxNos");
-	$("#map").hide();
+
     $("#hud").hide();
 	$("#vehicle").hide();
+	$('#notification').hide();
 
 	window.addEventListener('message', function(event){
 		var item = event.data;
@@ -21,11 +22,11 @@ $(function() {
 		$('#cash').text(event.data.cash);
 		if (item.type === "ui") {
 			if (item.display === true) {
-            	$("#map").fadeIn(500);
+				$('#notification').css("bottom", "22%");
                 $("#hud").fadeIn(500);
 				$("#vehicle").fadeIn(500);
 			} else{
-              	$("#map").fadeOut(500);
+				$('#notification').css("bottom", "5%");
                 $("#hud").fadeOut(500);
 				$("#vehicle").fadeOut(500);
             }
@@ -44,6 +45,17 @@ $(function() {
 			} else{
 				$container.show();
             }
+		} else if (item.type == "notification"){
+			notify(item.title, item.content, item.delay);
 		}
     }); 
 });
+
+function notify(title, content, delay) {
+	$('#notifTitle').html(title);
+	$('#notifContent').html(content);
+	$('#notification').fadeIn(200);
+	setTimeout(() => {  $('#notification').fadeOut(200); }, delay);
+	setTimeout(() => {  console.log("success"); }, delay);
+	setTimeout(() => {  return true; }, delay+200);
+ }

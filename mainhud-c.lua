@@ -104,12 +104,18 @@ end)
 
 --Remove Health/Armour from minimap
 Citizen.CreateThread(function()
+    Citizen.Wait(1)
+    SetMinimapComponentPosition("minimap", "L", "B", -0.006, -0.032, 0.150, 0.188888)
+    SetMinimapComponentPosition("minimap_mask", "L", "B", 0.020, 0.002, 0.111, 0.159)
+    SetMinimapComponentPosition("minimap_blur", "L", "B", -0.03, -0.008, 0.266, 0.237)
+
     local minimap = RequestScaleformMovie("minimap")
-    SetRadarBigmapEnabled(true, false)
-    Wait(0)
-    SetRadarBigmapEnabled(false, false)
+    SetBigmapActive(true, false)
+    Citizen.Wait(0)
+    SetBigmapActive(false, false)
+
     while true do
-        Wait(0)
+        Citizen.Wait(0)
         BeginScaleformMovieMethod(minimap, "SETUP_HEALTH_ARMOUR")
         ScaleformMovieMethodAddParamInt(3)
         EndScaleformMovieMethod()
