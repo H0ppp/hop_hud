@@ -1,68 +1,51 @@
-notifQueue = {}
+Queue = {}
 
-function sendNotification(locTitle, locContent, locDelay)
-    SendNUIMessage({
-        type = "notification",
-        title = locTitle,
-        content = locContent,
-        delay = locDelay
-    });
-    PlaySoundFrontend(-1, "Notification", "&Global_19670", true)
+
+function SendNotification(Notification)
+	if(Notification) then
+		if(Notification.sent == false) then
+			SendNUIMessage({
+				type = "notification",
+				title = Notification.title,
+				content = Notification.content,
+				delay = Notification.delay
+			});
+			PlaySoundFrontend(-1, "CHALLENGE_UNLOCKED", "HUD_AWARDS")
+			Notification.sent = true;
+		end
+	end
 end
 
-function addNotification(locTitle, locContent, locDelay)
-    SendNUIMessage({
-        type = "notification",
-        title = locTitle,
-        content = locContent,
-        delay = locDelay
-    });
+function AddNotification(locTitle, locContent, locDelay)
+	Queue[#Queue+1] = {title = locTitle, content = locContent, delay = locDelay, shown = false, sent = false}
 end
 
 
+Citizen.CreateThread(function()
+    while true do
+		Citizen.Wait(1)
+		if #Queue ~= 0 then
+			if Queue[1].shown == true then 
+				for k,notif in ipairs(Queue) do 
+					Queue[k-1] = notif
+				end
+				Queue[#Queue] = nil
+				SendNotification(Queue[1])
+			else
+				SendNotification(Queue[1])
+			end
+		end
+	end
+end)
 
+RegisterNUICallback('notifySuccess', function(data, cb)
+    local itemId = data.itemId
+	Queue[1].shown = true
+end)
 
 RegisterNetEvent("hop_hud:addNotification")
-AddEventHandler("hop_hud:addNotification", addNotification)
-
-
+AddEventHandler("hop_hud:addNotification", AddNotification)
 
 RegisterCommand("testNotification", function()
-    --sendNotif("Test Notification!","This is a test", 5000)
-    TriggerEvent("hop_hud:addNotification","Test Notification!","This is a test", 5000)
+	TriggerEvent("hop_hud:addNotification","Test Notification!","This is a test", 5000)
 end, false)
-
-function notifQueue.new ()
-    return {first = 0, last = -1}
-end
-
-function notifQueue.pushleft (list, value)
-    local first = list.first - 1
-    list.first = first
-    list[first] = value
-  end
-  
-  function notifQueue.pushright (list, value)
-    local last = list.last + 1
-    list.last = last
-    list[last] = value
-  end
-  
-  function notifQueue.popleft (list)
-    local first = list.first
-    if first > list.last then error("list is empty") end
-    local value = list[first]
-    list[first] = nil        -- to allow garbage collection
-    list.first = first + 1
-    return value
-  end
-  
-  function notifQueue.popright (list)
-    local last = list.last
-    if list.first > last then error("list is empty") end
-    local value = list[last]
-    list[last] = nil         -- to allow garbage collection
-    list.last = last - 1
-    return value
-  end
-  

@@ -56,6 +56,18 @@ function notify(title, content, delay) {
 	$('#notifContent').html(content);
 	$('#notification').fadeIn(200);
 	setTimeout(() => {  $('#notification').fadeOut(200); }, delay);
-	setTimeout(() => {  console.log("success"); }, delay);
+	setTimeout(() => {  notifySuccess(); }, delay+200);
 	setTimeout(() => {  return true; }, delay+200);
  }
+
+ function notifySuccess() {
+    fetch(`https://${GetParentResourceName()}/notifySuccess`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: JSON.stringify({
+            itemId: 'notifySuccess'
+        })
+    }).then(resp => resp.json());
+}
