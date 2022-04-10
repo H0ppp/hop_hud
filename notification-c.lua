@@ -40,7 +40,9 @@ end)
 
 RegisterNUICallback('notifySuccess', function(data, cb)
     local itemId = data.itemId
-	Queue[1].shown = true
+	if(itemId == "success") then 
+		Queue[1].shown = true
+	end
 end)
 
 RegisterNetEvent("hop_hud:addNotification")

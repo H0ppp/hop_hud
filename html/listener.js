@@ -67,7 +67,7 @@ function notify(title, content, delay) {
             'Content-Type': 'application/json; charset=UTF-8',
         },
         body: JSON.stringify({
-            itemId: 'notifySuccess'
+            itemId: 'success'
         })
     }).then(resp => resp.json());
 }
