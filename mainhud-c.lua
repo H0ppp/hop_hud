@@ -59,6 +59,7 @@ Citizen.CreateThread(function() -- Main Thread
                 bank = bankValue,
                 cash = cashValue
             });
+            
         else
             DisplayRadar(false)
             TriggerEvent("exitCar", true)

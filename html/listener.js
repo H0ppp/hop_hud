@@ -1,6 +1,6 @@
 $(function() {
 	var $container = $("#container");
-	var $box = $("#box");
+	var $boxHealth = $("#box");
 	var $boxFood = $("#boxFood");
 	var $boxWater = $("#boxWater");
 	var $boxFuel = $("#boxFuel");
@@ -12,42 +12,54 @@ $(function() {
 
 	window.addEventListener('message', function(event){
 		var item = event.data;
+		switch (item.type) {
+            case "ui":
+				if (item.display === true) {
+					$('#notification').css("bottom", "22%");
+					$("#hud").fadeIn(500);
+					$("#vehicle").fadeIn(500);
+				} else{
+					$('#notification').css("bottom", "5%");
+					$("#hud").fadeOut(500);
+					$("#vehicle").fadeOut(500);
+				}
+            break;
 
-		$box.css("width", (item.heal-100)+"%");
-		$boxFood.css("width", (item.food)+"%");
-		$boxWater.css("width", (item.water)+"%");
-		$boxFuel.css("width", (item.fuel)+"%");
-		$boxNos.css("width", (item.nos/20)+"%");
-		$('#bank').text(event.data.bank);
-		$('#cash').text(event.data.cash);
-		if (item.type === "ui") {
-			if (item.display === true) {
-				$('#notification').css("bottom", "22%");
-                $("#hud").fadeIn(500);
-				$("#vehicle").fadeIn(500);
-			} else{
-				$('#notification').css("bottom", "5%");
-                $("#hud").fadeOut(500);
-				$("#vehicle").fadeOut(500);
-            }
-	    } else if (item.type === "vehui"){
-            $('#street').text(event.data.location);
-            $('#compass').text(event.data.dir);
-        } else if (item.type === "cashui"){
-			if (item.showCash === true) {
-            	$("#money").fadeIn(500);
-			} else{
-              	$("#money").fadeOut(500);
-            }
-        } else if (item.type === "pause"){
-			if (item.showHUD === true) {
-            	$container.hide();
-			} else{
-				$container.show();
-            }
-		} else if (item.type == "notification"){
-			notify(item.title, item.content, item.delay);
-		}
+            case "vehui":
+				$('#street').text(item.location);
+				$('#compass').text(item.dir);
+            break;
+
+			case "cashui":
+				if (item.showCash === true) {
+					$("#money").fadeIn(500);
+				} else{
+					  $("#money").fadeOut(500);
+				}
+			break;
+
+			case "pause":
+				if (item.showHUD === true) {
+					$container.hide();
+				} else{
+					$container.show();
+				}
+			break;
+
+			case "notification":
+				notify(item.title, item.content, item.delay);
+			break;
+
+            default:
+                $boxHealth.css("width", (item.heal-100)+"%");
+				$boxFood.css("width", (item.food)+"%");
+				$boxWater.css("width", (item.water)+"%");
+				$boxFuel.css("width", (item.fuel)+"%");
+				$boxNos.css("width", (item.nos/20)+"%");
+				$('#bank').text(item.bank);
+				$('#cash').text(item.cash);
+            break;
+        }
     }); 
 });
 
@@ -61,13 +73,13 @@ function notify(title, content, delay) {
  }
 
  function notifySuccess() {
-    fetch(`https://${GetParentResourceName()}/notifySuccess`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: JSON.stringify({
-            itemId: 'success'
-        })
-    }).then(resp => resp.json());
+	fetch(`https://${GetParentResourceName()}/notifySuccess`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json; charset=UTF-8',
+		},
+		body: JSON.stringify({
+			itemId: 'success'
+		})
+		}).then(resp => resp.json());
 }

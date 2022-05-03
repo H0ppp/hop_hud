@@ -38,7 +38,7 @@ Citizen.CreateThread(function()
 	end
 end)
 
-RegisterNUICallback('notifySuccess', function(data, cb)
+RegisterNUICallback('notifySuccess', function(data)
     local itemId = data.itemId
 	if(itemId == "success") then 
 		Queue[1].shown = true
