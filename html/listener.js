@@ -1,4 +1,4 @@
-$(function() {
+$(document).ready(function() {
 	var $container = $("#container");
 	var $boxHealth = $("#box");
 	var $boxFood = $("#boxFood");
@@ -9,11 +9,27 @@ $(function() {
     $("#hud").hide();
 	$("#vehicle").hide();
 	$('#notification').hide();
+	$container.hide();
+	$("#change").hide();
 
 	window.addEventListener('message', function(event){
 		var item = event.data;
 		switch (item.type) {
-            case "ui":
+			case "Visible":
+				if (item.showHUD === true) {
+					$container.show();
+				} else{
+					$container.hide();
+				}
+			break;
+			case "CashVisible":
+				if (item.showCash === true) {
+					$("#money").fadeIn(500);
+				} else{
+					  $("#money").fadeOut(500);
+				}
+			break;
+            case "VehDataVisible":
 				if (item.display === true) {
 					$('#notification').css("bottom", "22%");
 					$("#hud").fadeIn(500);
@@ -24,43 +40,46 @@ $(function() {
 					$("#vehicle").fadeOut(500);
 				}
             break;
-
-            case "vehui":
+            case "VehData":
 				$('#street').text(item.location);
 				$('#compass').text(item.dir);
             break;
-
-			case "cashui":
-				if (item.showCash === true) {
-					$("#money").fadeIn(500);
-				} else{
-					  $("#money").fadeOut(500);
-				}
-			break;
-
-			case "pause":
-				if (item.showHUD === true) {
-					$container.hide();
-				} else{
-					$container.show();
-				}
-			break;
-
 			case "notification":
 				notify(item.title, item.content, item.delay);
 			break;
-
-            default:
-                $boxHealth.css("width", (item.heal-100)+"%");
+			case "PlayerInfo":
+				$boxHealth.css("width", (item.heal-100)+"%");
 				$boxFood.css("width", (item.food)+"%");
 				$boxWater.css("width", (item.water)+"%");
+				oldCash = $('#cash').text();
+				$('#cash').text(item.cash).trigger("change");
+			break;
+			case "VehicleInfo":
 				$boxFuel.css("width", (item.fuel)+"%");
 				$boxNos.css("width", (item.nos/20)+"%");
-				$('#bank').text(item.bank);
-				$('#cash').text(item.cash);
+			break;
+            default:
+				console.log("Impossible event was received!");
             break;
         }
     }); 
+
+	$("#cash").change(function() {
+		if(oldCash !=  $('#cash').text()){
+			var numOld = parseInt(oldCash.replace(',', '').replace('$', ''));
+			var numNew = parseInt($('#cash').text().replace(',', '').replace('$', ''));
+			var diff = numNew - numOld;
+			if(diff > 0){
+				$("#change").css("color", "green");
+				$("#change").text("+"+diff);
+			} else {
+				$("#change").css("color", "red");
+				$("#change").text(diff);
+			}
+			$("#change").show();
+			setTimeout(() => {  $("#change").hide(); }, 4000);
+		}
+	  });
 });
 
 function notify(title, content, delay) {

@@ -9,17 +9,12 @@ function sendSpeed(content) -- Render text to screen
     EndTextCommandDisplayText(0.9,0.8)
 end
 
-function sendDir(content)
-    SendNUIMessage({
-        type = "vehui",
-        dir = content
-      })
-end
 
-function sendLoc(content)
+function sendLoc(direction, street)
     SendNUIMessage({
-        type = "vehui",
-        location = content
+        type = "VehData",
+        dir = direction,
+        location = street
       })
 end
 
@@ -65,21 +60,20 @@ Citizen.CreateThread(function()
                 direction = "NE"
             end
             
-            sendDir(direction) -- Send vehicle direction to NUI
             sendSpeed(math.floor(speed).." Mph") -- Send vehicle speed to render
 
             if IsPointOnRoad(playerCoords.x,playerCoords.y,playerCoords.z) then
                 isOffroad = false
                 streetHash, crossingHash = GetStreetNameAtCoord(playerCoords.x,playerCoords.y,playerCoords.z) -- Street name of current location
                 streetName = GetStreetNameFromHashKey(streetHash) -- Get street name
-                sendLoc(streetName) -- Send vehicle location to NUI
+                sendLoc(direction, streetName)
             else
                 local dist = math.sqrt(math.pow(xDiff,2) + math.pow(yDiff,2))
                 if (dist > 30 or isOffroad == true) then 
                     isOffroad = true
-                    sendLoc(area) -- Send vehicle location to NUI
+                    sendLoc(direction, area)
                 else 
-                    sendLoc(streetName) -- Send vehicle location to NUI
+                    sendLoc(direction, streetName)
                 end
             end
         end

@@ -1,24 +1,15 @@
 local waterLevel = 0
 local foodLevel = 0
 local cashValue = 0
-local bankValue = 0
 ESX = nil
 playerData = nil
-isPaused = false
+local hudActive = false
+local PlayerInfo = {}
+local VehicleInfo = {}
+local LastPlayerInfo = {}
+local LastVehicleInfo = {}
 
 local cashDisplay = true
-
-RegisterCommand("showcash", function()
-    if(cashDisplay == true) then 
-        cashDisplay = false
-    else
-        cashDisplay = true 
-    end
-    SendNUIMessage({
-        type = "cashui",
-        showCash = cashDisplay
-      })
-end, false)
 
 Citizen.CreateThread(function() -- ESX Thread
 	while ESX == nil do
@@ -29,59 +20,141 @@ end)
 
 Citizen.CreateThread(function() -- Main Thread
     Citizen.Wait(2000)
+    DisplayRadar(false)
+    LastPlayerInfo.health = 0 
+    LastPlayerInfo.water = 0
+    LastPlayerInfo.food = 0
+    LastPlayerInfo.cash = 0
     while true do
-        Citizen.Wait(0)
-        local ped = GetPlayerPed(-1)
-        local health = GetEntityHealth(ped)
-        playerData = ESX.GetPlayerData()
+        Citizen.Wait(500)
+        while hudActive do
+            Citizen.Wait(0)
+            local ped = GetPlayerPed(-1)
+            local health = GetEntityHealth(ped)
+            playerData = ESX.GetPlayerData()
+            local VehStateChanged = false
+            local PlayerStateChanged = false
 
-        for k,v in ipairs(playerData.accounts) do
-            if v.name == 'money' then
-                cashValue = "$" .. ESX.Math.GroupDigits(v.money)
+            for k,v in ipairs(playerData.accounts) do
+                if v.name == 'money' then
+                    cashValue = "$" .. ESX.Math.GroupDigits(v.money)
+                end
             end
-            if v.name == 'bank' then
-                bankValue = "$" .. ESX.Math.GroupDigits(v.money)
+
+            PlayerInfo.health = health 
+            PlayerInfo.water = waterLevel
+            PlayerInfo.food = foodLevel
+            PlayerInfo.cash = cashValue
+            if (IsPedInAnyVehicle(GetPlayerPed(-1),true)) then 
+                DisplayRadar(true)
+                SendCar(true)
+                local fuelLevel = exports["hop_fuel"]:GetFuel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
+                local nosLevel = exports["hop_nitro"]:GetNitroFuelLevel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
+                VehicleInfo.fuel = fuelLevel
+                VehicleInfo.nos = nosLevel
+
+                for i, v in pairs(VehicleInfo) do 
+                    if(v ~= LastVehicleInfo[i]) then 
+                        VehStateChanged = true
+                    end
+                end
+
+                if(VehStateChanged) then
+                    SendNUIMessage({
+                        type = "VehicleInfo",
+                        fuel = fuelLevel,
+                        nos = nosLevel
+                    });
+                end
+            else
+                DisplayRadar(false)
+                SendCar(false)
             end
-        end
 
-        if (IsPedInAnyVehicle(GetPlayerPed(-1),true)) then 
-            DisplayRadar(true)
-            TriggerEvent("enteredCar", true)
-            local fuelLevel = exports["hop_fuel"]:GetFuel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
-            local nosLevel = exports["hop_nitro"]:GetNitroFuelLevel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
+            for i, v in pairs(PlayerInfo) do 
+                if(v ~= LastPlayerInfo[i]) then 
+                    PlayerStateChanged = true
+                end
+            end
 
-            SendNUIMessage({
-                heal = health,
-                water = waterLevel,
-                food = foodLevel,
-                fuel = fuelLevel,
-                nos = nosLevel,
-                bank = bankValue,
-                cash = cashValue
-            });
-            
-        else
-            DisplayRadar(false)
-            TriggerEvent("exitCar", true)
-            SendNUIMessage({
-                heal = health,
-                water = waterLevel,
-                food = foodLevel,
-                bank = bankValue,
-                cash = cashValue
-            });
-        end
+            if(PlayerStateChanged) then
+                SendNUIMessage({
+                    type = "PlayerInfo",
+                    heal = health,
+                    water = waterLevel,
+                    food = foodLevel,
+                    fuel = fuelLevel,
+                    nos = nosLevel,
+                    cash = cashValue
+                });
+            end
 
-        if (IsPauseMenuActive()) then 
-            isPaused = true;
-            TriggerEvent("pause", true)
-        else
-            isPaused = false;
-            TriggerEvent("unPause", true)
+            if (IsPauseMenuActive()) then 
+                SendVisibility(false)
+            else
+                SendVisibility(true)
+            end
+            for i, v in pairs(PlayerInfo) do 
+                LastPlayerInfo[i] = v 
+            end
+            for i, v in pairs(VehicleInfo) do 
+                LastVehicleInfo[i] = v 
+            end
         end
     end
 end)
 
+function SendCar(bool) 
+    SendNUIMessage({
+        type = "VehDataVisible",
+        display = bool
+      })
+end
+
+function SendVisibility(bool) 
+    SendNUIMessage({
+        type = "Visible",
+        showHUD = bool
+      })
+end
+
+
+RegisterCommand("showcash", function()
+    if(cashDisplay == true) then 
+        cashDisplay = false
+    else
+        cashDisplay = true 
+    end
+    SendNUIMessage({
+        type = "CashVisible",
+        showCash = cashDisplay
+      })
+end, false)
+
+
+RegisterCommand("hud", function()
+    if(hudActive == true) then 
+        TriggerEvent("hop_hud:hide")
+    else
+        TriggerEvent("hop_hud:show")
+    end
+end, false)
+
+RegisterNetEvent('hop_hud:show')
+AddEventHandler('hop_hud:show', function()
+    hudActive = true
+    SendVisibility(hudActive) 
+end)
+
+RegisterNetEvent('hop_hud:hide')
+AddEventHandler('hop_hud:hide', function()
+    hudActive = false
+    SendVisibility(hudActive)
+end)
+
+AddEventHandler("hop_hud:updateBasics", function(basics)
+    foodLevel, waterLevel = basics[1].percent, basics[2].percent
+end)
 
 -- Hide original UI
 Citizen.CreateThread(function()
@@ -93,15 +166,6 @@ Citizen.CreateThread(function()
         HideHudComponentThisFrame(9) --Street Name
     end
 end)
-
-AddEventHandler("playerSpawned", function()
-	local ped = GetPlayerPed(-1)
-	if GetPedMaxHealth(ped) ~= 200 and not IsEntityDead(ped) then
-		SetPedMaxHealth(ped, 200)
-		SetEntityHealth(ped, GetEntityHealth(ped) + 25)
-	end
-end)
-
 
 --Remove Health/Armour from minimap
 Citizen.CreateThread(function()
@@ -121,41 +185,4 @@ Citizen.CreateThread(function()
         ScaleformMovieMethodAddParamInt(3)
         EndScaleformMovieMethod()
     end
-end)
-
-RegisterNetEvent('enteredCar')
-AddEventHandler('enteredCar', function()
-  SendNUIMessage({
-    type = "ui",
-    display = true
-  })
-end)
-
-RegisterNetEvent('exitCar')
-AddEventHandler('exitCar', function()
-  SendNUIMessage({
-    type = "ui",
-    display = false
-  })
-end)
-
-RegisterNetEvent('pause')
-AddEventHandler('pause', function()
-    SendNUIMessage({
-        type = "pause",
-        showHUD = isPaused
-      })
-end)
-
-RegisterNetEvent('unPause')
-AddEventHandler('unPause', function()
-    SendNUIMessage({
-        type = "pause",
-        showHUD = isPaused
-      })
-end)
-
-
-AddEventHandler("hop_hud:updateBasics", function(basics)
-    foodLevel, waterLevel = basics[1].percent, basics[2].percent
 end)
