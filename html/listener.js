@@ -57,6 +57,7 @@ $(document).ready(function() {
 			case "VehicleInfo":
 				$boxFuel.css("width", (item.fuel)+"%");
 				$boxNos.css("width", (item.nos/20)+"%");
+				Vehiclehealth(item.health);
 			break;
             default:
 				console.log("Impossible event was received!");
@@ -81,6 +82,20 @@ $(document).ready(function() {
 		}
 	  });
 });
+
+function Vehiclehealth(val){
+	if(val > 500){
+		$("#yellow").hide();
+		$("#red").hide();
+	}else if (val > 100 && val < 501){
+		$("#yellow").show();
+		$("#red").hide();
+	} else if (val < 101) {
+		console.log("yup");
+		$("#yellow").hide();
+		$("#red").show();
+	}
+}
 
 function notify(title, content, delay) {
 	$('#notifTitle').html(title);

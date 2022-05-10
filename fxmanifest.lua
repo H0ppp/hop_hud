@@ -14,7 +14,9 @@ files {
     'html/style.css',
     'html/listener.js',
     'html/img/accounts/bank.png',
-    'html/img/accounts/money.png'
+    'html/img/accounts/money.png',
+    'html/img/car/redEngine.png',
+    'html/img/car/yellowEngine.png'
 }
 
 author 'Jake Hopkins'

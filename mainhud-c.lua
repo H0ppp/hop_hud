@@ -48,10 +48,9 @@ Citizen.CreateThread(function() -- Main Thread
             if (IsPedInAnyVehicle(GetPlayerPed(-1),true)) then 
                 DisplayRadar(true)
                 SendCar(true)
-                local fuelLevel = exports["hop_fuel"]:GetFuel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
-                local nosLevel = exports["hop_nitro"]:GetNitroFuelLevel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
-                VehicleInfo.fuel = fuelLevel
-                VehicleInfo.nos = nosLevel
+                VehicleInfo.fuel = exports["hop_fuel"]:GetFuel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
+                VehicleInfo.nos = exports["hop_nitro"]:GetNitroFuelLevel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
+                VehicleInfo.health = GetVehicleEngineHealth(GetVehiclePedIsIn(GetPlayerPed(-1))
 
                 for i, v in pairs(VehicleInfo) do 
                     if(v ~= LastVehicleInfo[i]) then 
@@ -62,8 +61,9 @@ Citizen.CreateThread(function() -- Main Thread
                 if(VehStateChanged) then
                     SendNUIMessage({
                         type = "VehicleInfo",
-                        fuel = fuelLevel,
-                        nos = nosLevel
+                        fuel = VehicleInfo.fuel,
+                        nos = VehicleInfo.nos,
+                        health = VehicleInfo.health
                     });
                 end
             else

@@ -11,7 +11,11 @@
     color:orange;
 }
 
-
+.WarningLight {
+    position: absolute;
+    top: 86%;
+    left: 17%;
+}
 
 #notification {
     position:absolute;
