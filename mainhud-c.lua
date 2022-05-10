@@ -45,26 +45,31 @@ Citizen.CreateThread(function() -- Main Thread
             PlayerInfo.water = waterLevel
             PlayerInfo.food = foodLevel
             PlayerInfo.cash = cashValue
-            if (IsPedInAnyVehicle(GetPlayerPed(-1),true)) then 
-                DisplayRadar(true)
-                SendCar(true)
-                VehicleInfo.fuel = exports["hop_fuel"]:GetFuel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
-                VehicleInfo.nos = exports["hop_nitro"]:GetNitroFuelLevel(GetVehiclePedIsIn(GetPlayerPed(-1),true))
-                VehicleInfo.health = GetVehicleEngineHealth(GetVehiclePedIsIn(GetPlayerPed(-1))
+            if (IsPedInAnyVehicle(ped,true)) then 
+                vehicle = GetVehiclePedIsIn(ped,true)
+                if(GetPedInVehicleSeat(vehicle,-1) == ped and GetIsVehicleEngineRunning(vehicle)) then
+                    DisplayRadar(true)
+                    SendCar(true)
+                    VehicleInfo.fuel = exports["hop_fuel"]:GetFuel(vehicle)
+                    VehicleInfo.nos = exports["hop_nitro"]:GetNitroFuelLevel(vehicle)
+                    VehicleInfo.health = GetVehicleEngineHealth(vehicle)
 
-                for i, v in pairs(VehicleInfo) do 
-                    if(v ~= LastVehicleInfo[i]) then 
-                        VehStateChanged = true
+                    for i, v in pairs(VehicleInfo) do 
+                        if(v ~= LastVehicleInfo[i]) then 
+                            VehStateChanged = true
+                        end
                     end
-                end
 
-                if(VehStateChanged) then
-                    SendNUIMessage({
-                        type = "VehicleInfo",
-                        fuel = VehicleInfo.fuel,
-                        nos = VehicleInfo.nos,
-                        health = VehicleInfo.health
-                    });
+                    if(VehStateChanged) then
+                        SendNUIMessage({
+                            type = "VehicleInfo",
+                            fuel = VehicleInfo.fuel,
+                            nos = VehicleInfo.nos,
+                            health = VehicleInfo.health
+                        });
+                    end
+                else 
+                    SendCar(false)
                 end
             else
                 DisplayRadar(false)

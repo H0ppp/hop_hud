@@ -1,3 +1,5 @@
+var warningVisible, oldWarning;
+
 $(document).ready(function() {
 	var $container = $("#container");
 	var $boxHealth = $("#box");
@@ -5,12 +7,19 @@ $(document).ready(function() {
 	var $boxWater = $("#boxWater");
 	var $boxFuel = $("#boxFuel");
 	var $boxNos = $("#boxNos");
+	oldWarning = "none";
+	warningVisible = "none";
 
     $("#hud").hide();
 	$("#vehicle").hide();
 	$('#notification').hide();
 	$container.hide();
 	$("#change").hide();
+
+	var alert = new Howl({
+		src: ['alert.wav'],
+		volume: 0.1
+	  });
 
 	window.addEventListener('message', function(event){
 		var item = event.data;
@@ -58,6 +67,11 @@ $(document).ready(function() {
 				$boxFuel.css("width", (item.fuel)+"%");
 				$boxNos.css("width", (item.nos/20)+"%");
 				Vehiclehealth(item.health);
+				if(warningVisible != oldWarning){
+					if(warningVisible != "none") {
+						alert.play();
+					}
+				}
 			break;
             default:
 				console.log("Impossible event was received!");
@@ -84,14 +98,17 @@ $(document).ready(function() {
 });
 
 function Vehiclehealth(val){
+	oldWarning = warningVisible;
 	if(val > 500){
+		warningVisible = "none";
 		$("#yellow").hide();
 		$("#red").hide();
-	}else if (val > 100 && val < 501){
-		$("#yellow").show();
+	}else if (val > 320 && val < 601){
+		warningVisible = "yellow";
 		$("#red").hide();
-	} else if (val < 101) {
-		console.log("yup");
+		$("#yellow").show();
+	} else if (val < 321) {
+		warningVisible = "red";
 		$("#yellow").hide();
 		$("#red").show();
 	}
