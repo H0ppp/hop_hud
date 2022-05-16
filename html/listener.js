@@ -44,9 +44,6 @@ $(document).ready(function() {
 				$('#street').text(item.location);
 				$('#compass').text(item.dir);
             break;
-			case "notification":
-				notify(item.title, item.content, item.delay);
-			break;
 			case "PlayerInfo":
 				$("#boxHealth").css("width", (item.heal-100)+"%");
 				$("#boxFood").css("width", (item.food)+"%");
@@ -103,25 +100,4 @@ function Vehiclehealth(val){
 		$("#yellow").hide();
 		$("#red").show();
 	}
-}
-
-function notify(title, content, delay) {
-	$('#notifTitle').html(title);
-	$('#notifContent').html(content);
-	$('#notification').fadeIn(200);
-	setTimeout(() => {  $('#notification').fadeOut(200); }, delay);
-	setTimeout(() => {  notifySuccess(); }, delay+200);
-	setTimeout(() => {  return true; }, delay+200);
- }
-
- function notifySuccess() {
-	fetch(`https://${GetParentResourceName()}/notifySuccess`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json; charset=UTF-8',
-		},
-		body: JSON.stringify({
-			itemId: 'success'
-		})
-		}).then(resp => resp.json());
 }

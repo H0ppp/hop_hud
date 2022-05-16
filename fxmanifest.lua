@@ -3,8 +3,7 @@ game 'gta5'
 
 client_scripts {
     "speedometer-c.lua",
-    "mainhud-c.lua",
-    "notification-c.lua"
+    "mainhud-c.lua"
 }
 
 ui_page 'html/ui.html'
