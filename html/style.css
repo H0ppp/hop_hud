@@ -1,16 +1,3 @@
-.yellow {
-    color:yellow;
-}
-.blue {
-    color:skyblue;
-}
-.green {
-    color:green;
-}
-.orange {
-    color:orange;
-}
-
 .WarningLight {
     position: absolute;
     top: 89%;
@@ -97,11 +84,15 @@
     border-color: black;
     background-color:#696969;
 }
-#box, #boxFood, #boxWater, #boxFuel, #boxNos {
+.box {
     background: #12a402;
     width: 100%;
     height: 100%;
     transition: width 0.2s;
+}
+
+#boxHealth {
+    background: #12a402;
 }
 
 #boxWater {

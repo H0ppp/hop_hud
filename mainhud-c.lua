@@ -30,21 +30,19 @@ Citizen.CreateThread(function() -- Main Thread
         while hudActive do
             Citizen.Wait(0)
             local ped = GetPlayerPed(-1)
-            local health = GetEntityHealth(ped)
-            playerData = ESX.GetPlayerData()
+            local playerData = ESX.GetPlayerData()
             local VehStateChanged = false
             local PlayerStateChanged = false
 
-            for k,v in ipairs(playerData.accounts) do
-                if v.name == 'money' then
-                    cashValue = "$" .. ESX.Math.GroupDigits(v.money)
-                end
-            end
 
-            PlayerInfo.health = health 
+            PlayerInfo.health = GetEntityHealth(ped) 
             PlayerInfo.water = waterLevel
             PlayerInfo.food = foodLevel
-            PlayerInfo.cash = cashValue
+            for k,v in ipairs(playerData.accounts) do
+                if v.name == 'money' then
+                    PlayerInfo.cash = v.money
+                end
+            end
             if (IsPedInAnyVehicle(ped,true)) then 
                 vehicle = GetVehiclePedIsIn(ped,true)
                 if(GetPedInVehicleSeat(vehicle,-1) == ped and GetIsVehicleEngineRunning(vehicle)) then
@@ -85,12 +83,10 @@ Citizen.CreateThread(function() -- Main Thread
             if(PlayerStateChanged) then
                 SendNUIMessage({
                     type = "PlayerInfo",
-                    heal = health,
-                    water = waterLevel,
-                    food = foodLevel,
-                    fuel = fuelLevel,
-                    nos = nosLevel,
-                    cash = cashValue
+                    heal = PlayerInfo.health,
+                    water = PlayerInfo.waterLevel,
+                    food = PlayerInfo.foodLevel,
+                    cash = PlayerInfo.cash
                 });
             end
 

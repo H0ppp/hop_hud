@@ -11,6 +11,11 @@ $(document).ready(function() {
 	$("#change").hide();
 
 	var alert = new Howl({src: ['alert.wav'], volume: 0.1});
+	var formatter = new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+	});
+
 
 	window.addEventListener('message', function(event){
 		var item = event.data;
@@ -45,11 +50,11 @@ $(document).ready(function() {
 				$('#compass').text(item.dir);
             break;
 			case "PlayerInfo":
-				$("#boxHealth").css("width", (item.heal-100)+"%");
+				$("#boxHealth").css("width", ((item.heal)/2)+"%");
 				$("#boxFood").css("width", (item.food)+"%");
 				$("#boxWater").css("width", (item.water)+"%");
 				oldCash = $('#cash').text();
-				$('#cash').text(item.cash).trigger("change");
+				$('#cash').text(formatter.format(item.cash)).trigger("change");
 			break;
 			case "VehicleInfo":
 				$("#boxFuel").css("width", (item.fuel)+"%");
@@ -67,16 +72,17 @@ $(document).ready(function() {
 
 	$("#cash").change(function() {
 		if(oldCash !=  $('#cash').text()){
-			var numOld = parseInt(oldCash.replace(',', '').replace('$', ''));
-			var numNew = parseInt($('#cash').text().replace(',', '').replace('$', ''));
+			var numOld = parseFloat(oldCash.replace(/,/g, '').replace('$', ''));
+			var numNew = parseFloat($('#cash').text().replace(/,/g, '').replace('$', ''));
 			var diff = numNew - numOld;
+			
 			if(!isNaN(diff)){
 				if(diff > 0){
 					$("#change").css("color", "green");
-					$("#change").text("+"+diff);
+					$("#change").text("+"+formatter.format(diff));
 				} else {
 					$("#change").css("color", "red");
-					$("#change").text(diff);
+					$("#change").text("-"+formatter.format(Math.abs(diff)));
 				}
 				$("#change").show();
 				setTimeout(() => {  $("#change").hide(); }, 4000);
