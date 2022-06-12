@@ -84,8 +84,8 @@ Citizen.CreateThread(function() -- Main Thread
                 SendNUIMessage({
                     type = "PlayerInfo",
                     heal = PlayerInfo.health,
-                    water = PlayerInfo.waterLevel,
-                    food = PlayerInfo.foodLevel,
+                    water = PlayerInfo.water,
+                    food = PlayerInfo.food,
                     cash = PlayerInfo.cash
                 });
             end
