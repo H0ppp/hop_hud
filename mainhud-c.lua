@@ -22,6 +22,7 @@ Citizen.CreateThread(function() -- Main Thread
     Citizen.Wait(2000)
     DisplayRadar(false)
     LastPlayerInfo.health = 0 
+    LastPlayerInfo.armor = 0
     LastPlayerInfo.water = 0
     LastPlayerInfo.food = 0
     LastPlayerInfo.cash = 0
@@ -36,6 +37,7 @@ Citizen.CreateThread(function() -- Main Thread
 
 
             PlayerInfo.health = GetEntityHealth(ped) 
+            PlayerInfo.armor = GetPedArmour(ped) 
             PlayerInfo.water = waterLevel
             PlayerInfo.food = foodLevel
             for k,v in ipairs(playerData.accounts) do
@@ -84,6 +86,7 @@ Citizen.CreateThread(function() -- Main Thread
                 SendNUIMessage({
                     type = "PlayerInfo",
                     heal = PlayerInfo.health,
+                    armor = PlayerInfo.armor,
                     water = PlayerInfo.water,
                     food = PlayerInfo.food,
                     cash = PlayerInfo.cash

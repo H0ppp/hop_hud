@@ -24,12 +24,17 @@
 #food {
     left: -0.58%;
     top:96%;
-    width: 6.9%;
+    width: 4.6%;
 }
 #water {
     top:96%;
-    left: 6.3%;
-    width: 6.9%;
+    left: 4.1%;
+    width: 4.6%;
+}
+#armor {
+    top:96%;
+    left: 8.6%;
+    width: 4.6%;
 }
 
 .outerBox{
@@ -57,6 +62,10 @@
 
 #boxWater {
     background: #0076ec;
+}
+
+#boxArmor {
+    background: #00c8ec;
 }
 
 #boxFood {

@@ -53,6 +53,7 @@ $(document).ready(function() {
 				$("#boxHealth").css("width", ((item.heal)/2)+"%");
 				$("#boxFood").css("width", (item.food)+"%");
 				$("#boxWater").css("width", (item.water)+"%");
+				$("#boxArmor").css("width", (item.armor)+"%");
 				oldCash = $('#cash').text();
 				$('#cash').text(formatter.format(item.cash)).trigger("change");
 			break;
